@@ -26,10 +26,15 @@ for fileit = 1:filenum
 
     R0 = 22.5;
     Rho0 = 3;
-    s0 = 1;
+    
 
-    t = a(:,1);
-    P = a(:,2);
+%    t = a(:,1);
+    P = a(:,1);
+    P = round(P/0.25)*0.25;
+    H_exp = a(:,2);
+    t = a(:,3);
+    s0 = a(:, 4);
+    s0 = s0(1);
     num = size(a, 1);
     h = zeros(num, 1);
     h(1) = s0;
@@ -54,7 +59,7 @@ for fileit = 1:filenum
             %ttt = Testdhdt(k, n, m, P(j), s0, Rho0, R0, Y(end), h_sym);
             %tttt = matlabFunction(ttt);
             [T, Y] = ode45(@(t, h)Testdhdt(k, n, m, P(j), s0, Rho0, R0, h), t(j:i), Y(end));
-            p45 = plot(t(j:i), Y, 'm', 'DisplayName', 'Runge-Kutta ode45');
+            p45 = plot(T, Y, 'm', 'DisplayName', 'Runge-Kutta ode45');
             H2 = [H2; Y];
             hold on
             j = i;
@@ -79,9 +84,6 @@ for fileit = 1:filenum
     for i = 1:size(P)
         if i > 1
             h(i) = h(i - 1) + dhdt(i) * (t(i) - t(i - 1));
-%             ttt = Testdhdt(k, n, m, P(i), s0, B, Rho0, R0, h(i-1));
-%             tttt = matlabFunction(ttt);
-%             [T, Y] = ode45(@(t, h)tttt(h), [t(1), t(end)], h(i-1));
         else
             h(i) = 1;
         end
@@ -105,14 +107,12 @@ for fileit = 1:filenum
         end
     end
     SR(1) = SR(2);
-    H_exp = a(:,3);
-    t_exp = a(:,4);
     F = [];
     F1 = [];
-    num0 = find(H_exp == 0);
-    num0 = num0(1) - 1;
-    num10 = find(t == 10)-1;
-    pit = P(num10+1);
+%     num0 = find(H_exp == 0);
+%     num0 = num0(1) - 1;
+%     num10 = find(t == 10)-1;
+%     pit = P(num10+1);
     k = 1;
 %    syms H_exp_sym k_sym n_sym m_sym
 %     test = Testdhdt(k_sym, n_sym, m_sym, P(1+num10), s0, B, Rho0, R0, h(1+num10), h_sym);
@@ -120,68 +120,59 @@ for fileit = 1:filenum
 %     testfun = matlabFunction(testt);
 %     [X_min, Err_min] = fminsearch(@(x)testfun(H_exp(1), h(1+num10), x(3), x(4), x(5)), [k, m, n]);
 
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t, num0), [k, m, n], [100 inf inf], [30000 inf inf], optimset('Display', 'iter'));
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t), [k, m, n], [100 inf inf], [10000 inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
 %    [X_min, Err] = fminsearch(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t, num0), [k, m, n], optimset('Display', 'iter'));
     
-    X_min
-    Err
-    Pstart = P(1);
+     X_min
+     Err
+     Pstart = P(1);
     Y(end) = 1;
-    j = 1;
-    hold on
-    %figure('Name', char(name))
-    %syms h_sym
+     j = 1;
+%     hold on
+%     %figure('Name', char(name))
+%     %syms h_sym
     H1 = [];
     for i = 1:numel(P)
         if P(i) ~= Pstart
             %ttt = Testdhdt(k, n, m, P(j), s0, Rho0, R0, Y(end), h_sym);
             %tttt = matlabFunction(ttt);
             [T, Y] = ode45(@(t, h)Testdhdt(X_min(1), X_min(3), X_min(2), P(j), s0, Rho0, R0, h), t(j:i), Y(end));
-            pkmn = plot(t(j:i), Y, 'r', 'DisplayName', 'k, m and n from fminsearch');
+            pkmn = plot(T, Y, 'r', 'DisplayName', 'k, m and n from fminsearch');
             hold on
             H1 = [H1; Y];
             j = i;
             Pstart = P(i);
         end
     end
-    mineu = minim2(H_exp, h, num0, R0, Rho0, t_exp, P)
-    minode = minim2(H_exp, H1, num0, R0, Rho0, t_exp, P)
-%    wisdom1 = @(x)(((x(2) - x(1))/x(2)).^2 + ((x(4) - x(3))/x(4)).^2); 
-%     wait = waitbar(0, '1', 'Name', 'Calculating Error');
-%     for i = 1:num0 % 3 столбец - время, 4 - время (эксп.)
-%         Fmin = fminsearch(wisdom1,[h(i+num10), H_exp(i), t(i+num10), t_exp(i)]);
-%         Fmin1 = fminsearch(@wisdom,[h(i+num10), H_exp(i)]);
-%         F = [F; Fmin];
-%         F1 = [F1; Fmin1];
-%         waitbar(i / num0, wait, sprintf('%d/%d points calculated', i, num0), 'r')
-%     end
-%     close(wait)
-%     figure('Name', char(name))
+    mineu = minim2(H_exp, h, R0, Rho0, t, P)
+    minode = minim2(H_exp, H1, R0, Rho0, t, P)
+
+
     pcalc = plot(t, h, 'b--', 'DisplayName', 'Euler method');
-    %hold on
+    hold on
 %      plot(F(:, 3), F(:, 1), 'r', 'DisplayName', 'Data considering error')
-    pexp = plot(t_exp(1:num0), H_exp(1:num0), 'g', 'DisplayName', 'Experimental data');
+    pexp = plot(t, H_exp, 'g', 'DisplayName', 'Experimental data');
     xlabel('Time')
     ylabel('Height')
-    legend([pcalc pexp p45 pkmn])
+%     legend([pcalc pexp p45 pkmn])
     axis([0 inf 0 35])
     hold off
-    figure('Name', char(name))
-    err = MSE(H_exp(1:num0), h(num10:numel(h)));
-    err(1:numel(t)) = err;
-    pmse = plot(t, err, 'r', 'DisplayName', 'MSE');
-    hold on
-    err(1:numel(t)) = err.^2;
-    pdx = plot(t, err, 'y', 'DisplayName', 'DX');
-    xlabel('Time')
-    ylabel('Error')
-    legend([pmse pdx])
-%     plot(t_exp(1:num0), F1(:, 1), 'y', 'DisplayName', 'Data considering error ^2')
-%    plot(t_exp, H_exp, 'g', 'DisplayName', 'Experimental data');
-    hold off
-    figure('Name', char(name))
-    plot(t, SR)
-    xlabel('Time')
-    ylabel('SR')
-    axis([0 inf 0 0.01])
+%     figure('Name', char(name))
+%     err = MSE(H_exp(1:num0), h(num10:numel(h)));
+%     err(1:numel(t)) = err;
+%     pmse = plot(t, err, 'r', 'DisplayName', 'MSE');
+%     hold on
+%     err(1:numel(t)) = err.^2;
+%     pdx = plot(t, err, 'y', 'DisplayName', 'DX');
+%     xlabel('Time')
+%     ylabel('Error')
+%     legend([pmse pdx])
+% %     plot(t(1:num0), F1(:, 1), 'y', 'DisplayName', 'Data considering error ^2')
+% %    plot(t, H_exp, 'g', 'DisplayName', 'Experimental data');
+%     hold off
+%     figure('Name', char(name))
+%     plot(t, SR)
+%     xlabel('Time')
+%     ylabel('SR')
+%     axis([0 inf 0 0.01])
 end

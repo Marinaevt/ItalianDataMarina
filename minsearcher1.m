@@ -1,4 +1,4 @@
-function [fun] = minsearcher1(H_exp, k, m, n, P, s0, Rho0, R0, t, num0)
+function [fun] = minsearcher1(H_exp, k, m, n, P, s0, Rho0, R0, t)
     Pstart = P(1);
     Y = 1;
     j = 1;
@@ -16,6 +16,6 @@ function [fun] = minsearcher1(H_exp, k, m, n, P, s0, Rho0, R0, t, num0)
 %     k
 %     m
 %     n
-    fun = minim2(H_exp, H, num0, R0, Rho0, t, P);
+    fun = minim2(H_exp, H, R0, Rho0, t, P);
 end
 
