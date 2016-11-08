@@ -13,6 +13,7 @@ function [dhdt] = Testdhdt2(P, s0, Rho0, R0, h, A1, A2, A3, A4)
     eps = -log(s0/s);
 %     dsdh_s = -B*(h - 2*(r0 + Rho0))/((r0 + Rho0)^2) / s_s0;
     if x < 0.999
+        %stress = A1*ln(strain_rate)+A2 + strain*(A3*ln(strain_rate)+A4)
         dhdt = max(0, min(1000000, 1/2 * exp((sigma - eps*A4 - A2)/(A1+eps*A3))*r0));
     else
         dhdt = 0.1;
