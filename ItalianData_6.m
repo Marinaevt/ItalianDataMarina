@@ -124,7 +124,7 @@ for fileit = 1:filenum
 %     [X_min, Err_min] = fminsearch(@(x)testfun(H_exp(1), h(1+num10), x(3), x(4), x(5)), [k, m, n]);
         mju = -0.0000119652206646677;
         psy = 10;
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, x(3), x(4), n, x(1), x(2)), [mju, psy, k, m, n], [inf inf inf inf inf], [inf inf inf inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, k, m, n, mju, psy), [mju, psy], [inf inf], [inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
 %    [X_min, Err] = fminsearch(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t, num0), [k, m, n], optimset('Display', 'iter'));
     
      X_min
@@ -142,9 +142,9 @@ for fileit = 1:filenum
         if P(i) ~= Pstart
             %ttt = Testdhdt(k, n, m, P(j), s0, Rho0, R0, Y(end), h_sym);
             %tttt = matlabFunction(ttt);
-            k0 = X_min(3) + X_min(2)*t(j);
-            m0 = X_min(4) + X_min(1)*t(j);
-            [T, Y] = ode45(@(t, h)Testdhdt3(k0, X_min(5), m0, P(j), s0, Rho0, R0, h), t(j:i), Y(end));
+            k0 = k + X_min(2)*t(j);
+            m0 = m + X_min(1)*t(j);
+            [T, Y] = ode45(@(t, h)Testdhdt3(k0, n, m0, P(j), s0, Rho0, R0, h), t(j:i), Y(end));
             pkmn = plot(T, Y, 'r', 'DisplayName', 'k, m and n from fminsearch');
             hold on
             H1 = [H1; Y];
