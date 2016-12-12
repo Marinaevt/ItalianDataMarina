@@ -19,6 +19,9 @@ for fileit = 1:filenum
     k = 1028.254506;
     m = 0.504606103;
     n = 0;
+%     k = 3.221304305866571e+03;
+%     m = 0.490368216278289;
+%     n = -2.395840886690785e-04;
 %     k = 7.007073092271015e+02;    
 %     m = 0.456210908180900;    
 %     n = 1.704630547644973e-04;
@@ -113,15 +116,15 @@ for fileit = 1:filenum
 %     num0 = num0(1) - 1;
 %     num10 = find(t == 10)-1;
 %     pit = P(num10+1);
-    k = 1;
+%     k = 1;
 %    syms H_exp_sym k_sym n_sym m_sym
 %     test = Testdhdt(k_sym, n_sym, m_sym, P(1+num10), s0, B, Rho0, R0, h(1+num10), h_sym);
 %     testt = minim1(H_exp_sym, test);
 %     testfun = matlabFunction(testt);
 %     [X_min, Err_min] = fminsearch(@(x)testfun(H_exp(1), h(1+num10), x(3), x(4), x(5)), [k, m, n]);
-        mju = 0;
-        psy = 0;
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, k, m, n, mju, psy), [k, m, mju, psy, n], [inf inf inf inf inf], [inf inf inf inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
+        mju = -0.0000119652206646677;
+        psy = 10;
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, k, m, n, mju, psy), [mju, psy, k, m, n], [inf inf inf inf inf], [inf inf inf inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
 %    [X_min, Err] = fminsearch(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t, num0), [k, m, n], optimset('Display', 'iter'));
     
      X_min
@@ -132,14 +135,16 @@ for fileit = 1:filenum
 %     hold on
 %     %figure('Name', char(name))
 %     %syms h_sym
+%     k0 = k;
+%     m0 = m;
     H1 = [];
     for i = 1:numel(P)
         if P(i) ~= Pstart
             %ttt = Testdhdt(k, n, m, P(j), s0, Rho0, R0, Y(end), h_sym);
             %tttt = matlabFunction(ttt);
-            k = X_min(1) + X_min(4)*t(j);
-            m = X_min(2) + X_min(3)*t(j);
-            [T, Y] = ode45(@(t, h)Testdhdt3(k, X_min(5), m, P(j), s0, Rho0, R0, h), t(j:i), Y(end));
+            k0 = X_min(3) + X_min(2)*t(j);
+            m0 = X_min(4) + X_min(1)*t(j);
+            [T, Y] = ode45(@(t, h)Testdhdt3(k0, X_min(5), m0, P(j), s0, Rho0, R0, h), t(j:i), Y(end));
             pkmn = plot(T, Y, 'r', 'DisplayName', 'k, m and n from fminsearch');
             hold on
             H1 = [H1; Y];

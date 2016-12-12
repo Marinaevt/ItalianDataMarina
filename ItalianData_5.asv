@@ -16,9 +16,12 @@ for fileit = 1:filenum
         a = importdata(char(name), ',');
     end
     a(isnan(a)) = 0;
-    k = 1028.254506;
-    m = 0.504606103;
-    n = 0;
+%     k = 1028.254506;
+%     m = 0.504606103;
+%     n = 0;
+    k = 3.221304305866571e+03;
+    m = 0.490368216278289;
+    n = -2.395840886690785e-04;
 %     k = 7.007073092271015e+02;    
 %     m = 0.456210908180900;    
 %     n = 1.704630547644973e-04;
@@ -119,8 +122,9 @@ for fileit = 1:filenum
 %     testt = minim1(H_exp_sym, test);
 %     testfun = matlabFunction(testt);
 %     [X_min, Err_min] = fminsearch(@(x)testfun(H_exp(1), h(1+num10), x(3), x(4), x(5)), [k, m, n]);
-
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t), [k, m, n], [100 inf inf], [10000 inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
+        mju = 0;
+        psy = 0;
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, k, m, n, mju, psy), [mju, psy], [inf inf], [inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
 %    [X_min, Err] = fminsearch(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t, num0), [k, m, n], optimset('Display', 'iter'));
     
      X_min
@@ -131,12 +135,16 @@ for fileit = 1:filenum
 %     hold on
 %     %figure('Name', char(name))
 %     %syms h_sym
+%     k0 = k;
+%     m0 = m;
     H1 = [];
     for i = 1:numel(P)
         if P(i) ~= Pstart
             %ttt = Testdhdt(k, n, m, P(j), s0, Rho0, R0, Y(end), h_sym);
             %tttt = matlabFunction(ttt);
-            [T, Y] = ode45(@(t, h)Testdhdt(X_min(1), X_min(3), X_min(2), P(j), s0, Rho0, R0, h), t(j:i), Y(end));
+            k0 = k + X_min(2)*t(j);
+            m0 = m + X_min(1)*t(j);
+            [T, Y] = ode45(@(t, h)Testdhdt3(k0, n, m0, P(j), s0, Rho0, R0, h), t(j:i), Y(end));
             pkmn = plot(T, Y, 'r', 'DisplayName', 'k, m and n from fminsearch');
             hold on
             H1 = [H1; Y];
