@@ -124,7 +124,7 @@ for fileit = 1:filenum
 %     [X_min, Err_min] = fminsearch(@(x)testfun(H_exp(1), h(1+num10), x(3), x(4), x(5)), [k, m, n]);
         mju = -0.0000119652206646677;
         psy = 10;
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, k, m, n, mju, psy), [mju, psy], [inf inf], [inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher4(H_exp, P, s0, Rho0, R0, t, k, m, n, x(1), x(2)), [mju, psy], [inf inf], [inf inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
 %    [X_min, Err] = fminsearch(@(x)minsearcher1(H_exp, x(1), x(2), x(3), P, s0, Rho0, R0, t, num0), [k, m, n], optimset('Display', 'iter'));
     
      X_min
