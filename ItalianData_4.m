@@ -56,38 +56,38 @@ for fileit = 1:filenum
     for i = 1:numel(P)
         if P(i) ~= Pstart
             [T, Y] = ode45(@(t, h)Testdhdt2(P(j), s0, Rho0, R0, h, sf, A1, A2, A3, A4), t(j:i), Y(end));
-            p45 = plot(T, Y, 'm', 'DisplayName', 'Runge-Kutta ode45');
+            p45 = plot(T, Y, 'm', 'DisplayName', 'Starting values');
             H2 = [H2; Y];
             hold on
             j = i;
             Pstart = P(i);
         end
     end
-%      [X_min, Err] = fminsearchbnd(@(x)minsearcher3(H_exp, P, s0, Rho0, R0, t, sf, x(1), x(2), x(3), x(4)), [A1, A2, A3, A4], [0 0 inf inf], [inf inf 0 0], optimset('Display', 'iter', 'MaxFunEvals', 3000));   
-%      X_min
-%      Err
-%      Pstart = P(1);
-%      Y(end) = 1;
-%      j = 1;
-%     H1 = [];
-%     for i = 1:numel(P)
-%         if P(i) ~= Pstart
-%             [T, Y] = ode45(@(t, h)Testdhdt2(P(j), s0, Rho0, R0, h, sf, X_min(1), X_min(2), X_min(3), X_min(4)), t(j:i), Y(end));
-%             pkmn = plot(T, Y, 'r', 'DisplayName', 'k, m and n from fminsearch');
-%             hold on
-%             H1 = [H1; Y];
-%             j = i;
-%             Pstart = P(i);
-%         end
-%     end
-%     mineu = minim2(H_exp, h, R0, Rho0, t, P)
-%     minode = minim2(H_exp, H1, R0, Rho0, t, P)
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher3(H_exp, P, s0, Rho0, R0, t, sf, x(1), x(2), x(3), x(4)), [A1, A2, A3, A4], [0 0 inf inf], [inf inf 0 0], optimset('Display', 'iter', 'MaxFunEvals', 3000));   
+     X_min
+     Err
+     Pstart = P(1);
+     Y(end) = 1;
+     j = 1;
+    H1 = [];
+    for i = 1:numel(P)
+        if P(i) ~= Pstart
+            [T, Y] = ode45(@(t, h)Testdhdt2(P(j), s0, Rho0, R0, h, sf, X_min(1), X_min(2), X_min(3), X_min(4)), t(j:i), Y(end));
+            pkmn = plot(T, Y, 'r', 'DisplayName', 'Inverse analysis values');
+            hold on
+            H1 = [H1; Y];
+            j = i;
+            Pstart = P(i);
+        end
+    end
+    mineu = minim2(H_exp, h, R0, Rho0, t, P)
+    minode = minim2(H_exp, H1, R0, Rho0, t, P)
 
     hold on
     pexp = plot(t, H_exp, 'g', 'DisplayName', 'Experimental data');
     xlabel('Time')
     ylabel('Height')
-%     legend([pcalc pexp p45 pkmn])
+     legend([pexp p45 pkmn])
     axis([0 inf 0 35])
     hold off
 end
