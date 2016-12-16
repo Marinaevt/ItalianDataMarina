@@ -43,7 +43,7 @@
 %     H2 = [];
 %     for i = 1:numel(P)
 %         if P(i) ~= Pstart
-%             [T, Y] = ode45(@(t, h)Testdhdt2(P(j), s0, Rho0, R0, h, sf, A1, A2, A3, A4), t(j:i), Y(end));
+%             [T, Y] = ode45(@(t, h)Testdhdt2_A1_A4(P(j), s0, Rho0, R0, h, sf, A1, A2, A3, A4), t(j:i), Y(end));
 %             p45 = plot(T, Y, 'm', 'DisplayName', 'Starting values');
 %             H2 = [H2; Y];
 %             hold on
@@ -51,7 +51,7 @@
 %             Pstart = P(i);
 %         end
 %     end
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher7(H_exp1, P1, s0, Rho0, R0, t1, sf1, H_exp2, P2, t2, sf2, H_exp3, P3, t3, sf3, H_exp4, P4, t4, sf4, x(1), x(2), x(3), x(4)), [A1, A2, A3, A4], [0 0 inf inf], [inf inf 0 0], optimset('Display', 'iter', 'MaxFunEvals', 3000));   
+     [X_min, Err] = fminsearchbnd(@(x)minsearcher7_few_A(H_exp1, P1, s0, Rho0, R0, t1, sf1, H_exp2, P2, t2, sf2, H_exp3, P3, t3, sf3, H_exp4, P4, t4, sf4, x(1), x(2), x(3), x(4)), [A1, A2, A3, A4], [0 0 inf inf], [inf inf 0 0], optimset('Display', 'iter', 'MaxFunEvals', 3000));   
      X_min
      Err
      Pstart = P1(1);
@@ -60,7 +60,7 @@
     H1 = [];
     for i = 1:numel(P1)
         if P1(i) ~= Pstart
-            [T, Y] = ode45(@(t, h)Testdhdt2(P1(j), s0, Rho0, R0, h, sf1, X_min(1), X_min(2), X_min(3), X_min(4)), t1(j:i), Y(end));
+            [T, Y] = ode45(@(t, h)Testdhdt2_A1_A4(P1(j), s0, Rho0, R0, h, sf1, X_min(1), X_min(2), X_min(3), X_min(4)), t1(j:i), Y(end));
             pkmn = plot(T, Y, 'r', 'DisplayName', 'Inverse analysis values');
             hold on
             H1 = [H1; Y];
@@ -76,7 +76,7 @@
     H1 = [];
     for i = 1:numel(P2)
         if P2(i) ~= Pstart
-            [T, Y] = ode45(@(t, h)Testdhdt2(P2(j), s0, Rho0, R0, h, sf2, X_min(1), X_min(2), X_min(3), X_min(4)), t2(j:i), Y(end));
+            [T, Y] = ode45(@(t, h)Testdhdt2_A1_A4(P2(j), s0, Rho0, R0, h, sf2, X_min(1), X_min(2), X_min(3), X_min(4)), t2(j:i), Y(end));
             pkmn = plot(T, Y, 'k', 'DisplayName', 'Inverse analysis values');
             hold on
             H1 = [H1; Y];
@@ -92,7 +92,7 @@
     H1 = [];
     for i = 1:numel(P3)
         if P3(i) ~= Pstart
-            [T, Y] = ode45(@(t, h)Testdhdt2(P3(j), s0, Rho0, R0, h, sf3, X_min(1), X_min(2), X_min(3), X_min(4)), t3(j:i), Y(end));
+            [T, Y] = ode45(@(t, h)Testdhdt2_A1_A4(P3(j), s0, Rho0, R0, h, sf3, X_min(1), X_min(2), X_min(3), X_min(4)), t3(j:i), Y(end));
             pkmn = plot(T, Y, 'c', 'DisplayName', 'Inverse analysis values');
             hold on
             H1 = [H1; Y];
@@ -102,13 +102,13 @@
     end
 %     mineu = minim2(H_exp, h, R0, Rho0, t, P)
     minode3 = minim2(H_exp3, H1, R0, Rho0, t3, P3)
-     Pstart = P4(1);
-     Y(end) = 1;
-     j = 1;
+    Pstart = P4(1);
+    Y(end) = 1;
+    j = 1;
     H1 = [];
     for i = 1:numel(P4)
         if P4(i) ~= Pstart
-            [T, Y] = ode45(@(t, h)Testdhdt2(P4(j), s0, Rho0, R0, h, sf4, X_min(1), X_min(2), X_min(3), X_min(4)), t4(j:i), Y(end));
+            [T, Y] = ode45(@(t, h)Testdhdt2_A1_A4(P4(j), s0, Rho0, R0, h, sf4, X_min(1), X_min(2), X_min(3), X_min(4)), t4(j:i), Y(end));
             pkmn = plot(T, Y, 'g', 'DisplayName', 'Inverse analysis values');
             hold on
             H1 = [H1; Y];

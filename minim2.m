@@ -23,7 +23,7 @@ function [fun] = minim2(H_exp, H, R0, Rho0, t_exp, P)
 
     while i<numel(H_exp) %&& (H(i) <= R0 || H_exp(i)<=R0)
         if (H_exp(i) < R0+Rho0) && (H_exp(i) ~= 0)
-            f2 = f2 + abs(H_exp(i)-H(i+delta))/H_exp(i);
+            f2 = f2 + abs(H_exp(i)-H(i+delta));
         end
         i = i + 1;
     end
