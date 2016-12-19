@@ -1,6 +1,6 @@
 function [fun] = minsearcher5_km_s0s1(H_exp, P, s0, Rho0, R0, t, sf, s_0, s_1)
     Pstart = P(1);
-    Y = 1;
+    Y = H_exp(1);
     j = 1;
     H = [];
     eps_dot = 0.0001;

@@ -9,10 +9,10 @@ function [dhdt, eps_dot] = Testdhdt4_km_s0s1(P, s0, Rho0, R0, h, sf, t, eps_dot,
     s = s0 * (1 - B*(h/(r0 + Rho0)));
     sigma = P * r0 / (s * 2);
     eps = log(s0/s);
-    A1 = 7.60110e+00;
-    A2 = 8.57396e+01;
-    A3 = -4.22663e+00;
-    A4 = -3.29953e+01;
+%     A1 = 7.60110e+00;
+%     A2 = 8.57396e+01;
+%     A3 = -4.22663e+00;
+%     A4 = -3.29953e+01;
     dsdh = B * (h - 2*(r0 + Rho0))/((r0 + Rho0)^2) * s0;
     m = 0.627 - t*1.02367e-5;
 %     for i = 1:120
@@ -23,7 +23,7 @@ function [dhdt, eps_dot] = Testdhdt4_km_s0s1(P, s0, Rho0, R0, h, sf, t, eps_dot,
 	  sigma1 =  s_0 + eps*s_1;
 %     sigma1 =  4.2817 + eps*12.9837;
 %     sigma1 =  4.2817 + t*0.000286640048804879;
-    k = sigma1/(0.000340154387908685)^m;
+    k = sigma1/(0.0000220769518118314)^m;
     eps_dot = (sigma/k)^(1/m);
 
     if x < 0.999

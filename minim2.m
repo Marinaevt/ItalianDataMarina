@@ -20,10 +20,12 @@ function [fun] = minim2(H_exp, H, R0, Rho0, t_exp, P)
 %     end
 %     f1 = sqrt(f1)*100;
      i = 1;
-
-    while i<numel(H_exp) %&& (H(i) <= R0 || H_exp(i)<=R0)
+    while i<min(numel(H_exp), numel(H)) %&& (H(i) <= R0 || H_exp(i)<=R0)
         if (H_exp(i) < R0+Rho0) && (H_exp(i) ~= 0)
             f2 = f2 + abs(H_exp(i)-H(i+delta));
+%             if abs(H_exp(i)-H(i+delta))>1;
+%                 i
+%             end
         end
         i = i + 1;
     end

@@ -1,4 +1,4 @@
-function [dhdt] = Testdhdt4(P, s0, Rho0, R0, h, sf, k, m)
+function [dhdt] = Testdhdt4_km(P, s0, Rho0, R0, h, sf, k, m)
     if h < R0 + Rho0
         r0 = ((R0 + Rho0)^2 + h^2)/2/h - Rho0;
     else

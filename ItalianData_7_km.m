@@ -48,7 +48,7 @@ for fileit = 1:filenum
     H2 = [];
     for i = 1:numel(P)
         if P(i) ~= Pstart
-            [T, Y] = ode45(@(t, h)Testdhdt4(P(j), s0, Rho0, R0, h, sf, k, m), t(j:i), Y(end));
+            [T, Y] = ode45(@(t, h)Testdhdt4_km(P(j), s0, Rho0, R0, h, sf, k, m), t(j:i), Y(end));
             p45 = plot(T, Y, 'm', 'DisplayName', 'Starting values');
             H2 = [H2; Y];
             hold on
@@ -56,7 +56,7 @@ for fileit = 1:filenum
             Pstart = P(i);
         end
     end
-     [X_min, Err] = fminsearchbnd(@(x)minsearcher5(H_exp, P, s0, Rho0, R0, t, sf, x(1), x(2)), [k, m], [100 inf], [10000 inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));   
+    [X_min, Err] = fminsearchbnd(@(x)minsearcher5_km(H_exp, P, s0, Rho0, R0, t, sf, x(1), x(2)), [k, m], [100 inf], [10000 inf], optimset('Display', 'iter', 'MaxFunEvals', 3000));
      X_min
      Err
      Pstart = P(1);
@@ -65,7 +65,7 @@ for fileit = 1:filenum
     H1 = [];
     for i = 1:numel(P)
         if P(i) ~= Pstart
-            [T, Y] = ode45(@(t, h)Testdhdt4(P(j), s0, Rho0, R0, h, sf, X_min(1), X_min(2)), t(j:i), Y(end));
+            [T, Y] = ode45(@(t, h)Testdhdt4_km(P(j), s0, Rho0, R0, h, sf, X_min(1), X_min(2)), t(j:i), Y(end));
             pkmn = plot(T, Y, 'r', 'DisplayName', 'Inverse analysis values');
             hold on
             H1 = [H1; Y];
